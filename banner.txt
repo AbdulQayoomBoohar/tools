@@ -8,3 +8,21 @@ Y88bo.       888  d8'     888   888   .d88' 888           888     888      .8"88
      `"Y88b  888`88b.     888   888         888           888     888    .88ooo8888.   
 oo     .d8P  888  `88b.   888   888         `88b    ooo   888     888   .8'     `888.  
 8""88888P'  o888o  o888o o888o o888o         `Y8bood8P'  o888o   o888o o88o     o8888o 
+
+ >> skipcha.online
+ >> bypassallshortlinks.space
+------------------------------------------------------------
+ CAPTCHA SOLVERS (BAS API) - cost per 1000 solves
+   Cloudflare Turnstile ...... 500 tokens  ($0.05)
+   hCaptcha .................. 500 tokens  ($0.05)
+   reCAPTCHA v3 .............. 500 tokens  ($0.05)
+   AntiBot Text .............. 200 tokens  ($0.02)
+   Slider Captcha ............ 500 tokens  ($0.05)
+   Icon Match ................ 500 tokens  ($0.05)
+   Bitcotasks ................ 500 tokens  ($0.05)
+   OnlyFaucet Hexagon ........ 500 tokens  ($0.05)
+   Upside Click .............. 500 tokens  ($0.05)
+   ShortLink Bypass ......... 1500 tokens  ($0.15)
+   Balance Check ............ Free
+------------------------------------------------------------
+ Bypass tools & shortlink utilities
