@@ -323,7 +323,7 @@ fun HomeHeader(u: UserData) {
 
 @Composable
 fun ActionCard(title: String, sub: String, icon: ImageVector, tint: Color, mod: Modifier, onClick: () -> Unit) {
-    Card(mod, shape = RoundedCornerShape(20.dp), colors = CardColors(), onClick = onClick) {
+    Card(onClick = onClick, modifier = mod, shape = RoundedCornerShape(20.dp), colors = CardColors()) {
         Column(Modifier.padding(vertical = 18.dp).fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
             Box(Modifier.size(46.dp).clip(RoundedCornerShape(15.dp)).background(tint), contentAlignment = Alignment.Center) {
                 Icon(icon, title, tint = Color.White, modifier = Modifier.size(22.dp))
