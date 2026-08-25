@@ -2,8 +2,12 @@ package com.investly.app
 
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.content.ClipData
+import android.content.ClipboardManager
+import android.content.Context
 import android.os.Bundle
 import android.view.View
+import android.webkit.JavascriptInterface
 import android.webkit.WebResourceRequest
 import android.webkit.WebView
 import android.webkit.WebViewClient
@@ -31,6 +35,23 @@ class MainActivity : Activity() {
         }
         wv.setBackgroundColor(0xFFF4F5F7.toInt())
         wv.overScrollMode = View.OVER_SCROLL_NEVER
+
+        // native clipboard bridge — works even though HTTP pages can't use navigator.clipboard
+        wv.addJavascriptInterface(object {
+            @JavascriptInterface
+            fun copy(text: String): Boolean {
+                return try {
+                    val cb = getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+                    cb.setPrimaryClip(ClipData.newPlainText("investly", text))
+                    true
+                } catch (_: Exception) {
+                    false
+                }
+            }
+
+            @JavascriptInterface
+            fun isApp(): Boolean = true
+        }, "InvestlyApp")
 
         wv.webViewClient = object : WebViewClient() {
             override fun shouldOverrideUrlLoading(v: WebView, r: WebResourceRequest): Boolean =
