@@ -31,10 +31,12 @@ class MainActivity : ComponentActivity() {
 
             // auto-refresh when internet comes back
             LaunchedEffect(Unit) {
-                var prev = vm.online.first()
-                while (true) {
-                    val now = vm.online.first()
-                    if (!prev && now) vm.refreshAll(force = true)
+                var prev = vm.online.value
+                vm.online.collect { now ->
+                    if (!prev && now) {
+                        vm.refreshAll(force = true)
+                        if (vm.loggedIn == false) vm.bootstrap()
+                    }
                     prev = now
                 }
             }
