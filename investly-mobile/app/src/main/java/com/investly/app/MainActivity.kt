@@ -104,11 +104,9 @@ class MainActivity : Activity() {
                     sendToJs("window.__onGoogleError && window.__onGoogleError('Unsupported credential type')")
                 }
             } catch (e: GetCredentialException) {
-                val msg = when (e.typeId) {
-                    "androidx.credentials.exceptions.GetCancellationException" -> "cancelled"
-                    else -> (e.message ?: "Google sign-in failed").take(120).replace("'", "")
-                }
-                if (msg != "cancelled") {
+                val raw = ((e.message ?: "") + " " + e.javaClass.simpleName)
+                if (!raw.contains("cancel", ignoreCase = true)) {
+                    val msg = raw.take(120).replace("'", "").replace("\n", " ").trim()
                     sendToJs("window.__onGoogleError && window.__onGoogleError('$msg')")
                 }
             } catch (e: Exception) {
