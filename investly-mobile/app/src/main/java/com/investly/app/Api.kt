@@ -103,11 +103,15 @@ class Api(context: Context) {
         client.newCall(b.build()).execute().use { resp ->
             val text = resp.body?.string() ?: ""
             if (!resp.isSuccessful) {
-                val msg = runCatching { json.parseToJsonElement(text).jsonObj()["message"]?.jsonPrim }.getOrNull()
-                val errs = runCatching {
-                    val o = json.parseToJsonElement(text).jsonObj()["errors"]?.jsonObj
-                    o?.entries?.associate { it.key to (it.value.toString().removeSurrounding("[", "]").split(",").map { s -> s.trim().removeSurrounding("\"") }) } ?: emptyMap()
-                }.getOrDefault(emptyMap())
+                val root = runCatching { json.parseToJsonElement(text) as? JsonObject }.getOrNull()
+                val msg = root.str("message")
+                val errs = root?.get("errors")?.let { e ->
+                    (e as? JsonObject)?.entries?.associate { entry ->
+                        entry.key to ((entry.value as? kotlinx.serialization.json.JsonArray)
+                            ?.mapNotNull { v -> v.jsonPrim() }
+                            ?: listOf(entry.value.jsonPrim() ?: ""))
+                    } ?: emptyMap()
+                } ?: emptyMap()
                 throw ApiException(resp.code, msg ?: "Request failed (${resp.code})", errs)
             }
             return text
@@ -154,13 +158,10 @@ class Api(context: Context) {
 }
 
 // tiny json helpers
-fun JsonObject.jsonObj(key: String? = null): JsonObject = if (key == null) this else this[key]!!.jsonObjectOrNull()
-val kotlinx.serialization.json.JsonElement.jsonObjectOrNull: JsonObject
-    get() = this as? JsonObject ?: JsonObject(emptyMap())
-fun JsonObject?.orEmptyJson(): JsonObject = this ?: JsonObject(emptyMap())
-fun kotlinx.serialization.json.JsonElement?.jsonPrim: String?
-    get() = (this as? kotlinx.serialization.json.JsonPrimitive)?.content
-fun JsonObject.str(k: String): String? = this[k]?.jsonPrim
+fun kotlinx.serialization.json.JsonElement?.jsonPrim(): String? =
+    (this as? kotlinx.serialization.json.JsonPrimitive)?.content
+
+fun JsonObject.str(k: String): String? = this[k].jsonPrim()
 fun JsonObject.dbl(k: String): Double = this[k]?.let {
     (it as? kotlinx.serialization.json.JsonPrimitive)?.content?.toDoubleOrNull() ?: 0.0
 } ?: 0.0
