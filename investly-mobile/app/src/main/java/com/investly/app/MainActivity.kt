@@ -28,7 +28,8 @@ class MainActivity : Activity() {
         const val SITE = "http://192.168.100.5:8000"
 
         /** Web application OAuth Client ID from Google Cloud Console (used for ID tokens) */
-        var GOOGLE_WEB_CLIENT_ID = ""
+        const val DEFAULT_GOOGLE_CLIENT_ID = "569341535435-f7fcr3e8biiiij3qrk1e1lp30e77glf3.apps.googleusercontent.com"
+        var GOOGLE_WEB_CLIENT_ID = DEFAULT_GOOGLE_CLIENT_ID
     }
 
     private lateinit var wv: WebView
