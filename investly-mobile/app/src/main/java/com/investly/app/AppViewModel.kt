@@ -17,6 +17,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import kotlinx.serialization.json.JsonArray
+import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.JsonObject
 
 data class UserData(
@@ -241,5 +242,5 @@ class AppViewModel(context: Context) {
     }
 }
 
-fun kotlinx.serialization.json.JsonElement.obj(): JsonObject = this as? JsonObject ?: JsonObject(emptyMap())
-fun kotlinx.serialization.json.JsonElement.arr(): JsonArray = this as? JsonArray ?: JsonArray(emptyList())
+fun JsonElement.obj(): JsonObject = this as? JsonObject ?: JsonObject(emptyMap())
+fun JsonElement.arr(): JsonArray = this as? JsonArray ?: JsonArray(emptyList())
