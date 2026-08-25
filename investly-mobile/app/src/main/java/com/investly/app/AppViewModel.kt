@@ -100,7 +100,7 @@ class AppViewModel(context: Context) {
             } catch (e: Exception) {
                 // offline but maybe cached session cookie exists -> try dashboard cache presence
                 loggedIn = readJson("dashboard") != null
-                offline = !api.hasInternet()
+                offline = !hasInternet()
             }
         }
     }
