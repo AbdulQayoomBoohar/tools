@@ -336,7 +336,7 @@ fun ActionCard(title: String, sub: String, icon: ImageVector, tint: Color, mod: 
 }
 
 @Composable
-fun TxRow(t: Map<String, kotlinx.serialization.json.JsonElement>) {
+fun TxRow(t: JsonObject) {
     val type = t.str("type") ?: ""
     val amount = t.dbl("amount")
     val isW = type == "withdrawal"
@@ -487,7 +487,7 @@ fun CategoryScreen(vm: AppViewModel, catName: String, onBack: () -> Unit, onOpen
 }
 
 @Composable
-fun PlanGridCard(p: Map<String, kotlinx.serialization.json.JsonElement>, onClick: () -> Unit) {
+fun PlanGridCard(p: JsonObject, onClick: () -> Unit) {
     val col = hexColor(p.str("color"))
     Card(shape = RoundedCornerShape(20.dp), colors = CardColors(), onClick = onClick) {
         Column(Modifier.padding(16.dp)) {
