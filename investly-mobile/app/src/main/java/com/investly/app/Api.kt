@@ -20,9 +20,9 @@ import java.util.concurrent.TimeUnit
 
 class ApiException(
     val httpCode: Int,
-    val message: String,
+    errorMessage: String,
     val errors: Map<String, List<String>> = emptyMap()
-) : Exception(message)
+) : Exception(errorMessage)
 
 class Api(context: Context) {
 
@@ -104,7 +104,7 @@ class Api(context: Context) {
             val text = resp.body?.string() ?: ""
             if (!resp.isSuccessful) {
                 val root = runCatching { json.parseToJsonElement(text) as? JsonObject }.getOrNull()
-                val msg = root.str("message")
+                val msg = root?.str("message")
                 val errs = root?.get("errors")?.let { e ->
                     (e as? JsonObject)?.entries?.associate { entry ->
                         entry.key to ((entry.value as? kotlinx.serialization.json.JsonArray)
