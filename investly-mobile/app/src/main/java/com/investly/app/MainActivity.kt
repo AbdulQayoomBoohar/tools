@@ -2,7 +2,6 @@ package com.investly.app
 
 import android.annotation.SuppressLint
 import android.app.Activity
-import android.os.Build
 import android.os.Bundle
 import android.view.View
 import android.webkit.WebResourceRequest
@@ -20,11 +19,6 @@ class MainActivity : Activity() {
     @SuppressLint("SetJavaScriptEnabled")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        // enable service workers so PWA offline caching works inside the shell
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            android.webkit.ServiceWorkerController.getInstance().settings.javaScriptEnabled = true
-        }
 
         wv = WebView(this)
         wv.settings.apply {
