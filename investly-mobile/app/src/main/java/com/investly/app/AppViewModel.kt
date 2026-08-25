@@ -89,7 +89,7 @@ class AppViewModel(context: Context) {
         scope.launch {
             loggedIn = null
             try {
-                val body = api.me().obj()
+                val body = Api.json.parseToJsonElement(api.me()).obj()
                 if (body.str("user") != null || body["id"] != null) {
                     applyUser(body)
                     loggedIn = true
@@ -108,7 +108,7 @@ class AppViewModel(context: Context) {
     fun login(email: String, password: String, onDone: (String?) -> Unit) {
         scope.launch {
             try {
-                val body = api.login(email.trim(), password).obj()
+                val body = Api.json.parseToJsonElement(api.login(email.trim(), password)).obj()
                 applyUser(body)
                 loggedIn = true
                 refreshAll(force = true)
@@ -202,7 +202,7 @@ class AppViewModel(context: Context) {
 
     suspend fun invest(planId: Int, amount: Double): Result<String> {
         return try {
-            val msg = api.invest(planId, amount).obj().str("message") ?: "Plan activated!"
+            val msg = (Api.json.parseToJsonElement(api.invest(planId, amount)) as? JsonObject)?.str("message") ?: "Plan activated!"
             refresh("investments", force = true)
             refresh("dashboard", force = true)
             Result.success(msg)
@@ -215,7 +215,7 @@ class AppViewModel(context: Context) {
 
     suspend fun withdraw(amount: Double): Result<String> {
         return try {
-            val msg = api.withdraw(amount).obj().str("message") ?: "Withdrawal requested"
+            val msg = (Api.json.parseToJsonElement(api.withdraw(amount)) as? JsonObject)?.str("message") ?: "Withdrawal requested"
             refresh("transactions", force = true)
             refresh("dashboard", force = true)
             Result.success(msg)
@@ -228,7 +228,7 @@ class AppViewModel(context: Context) {
 
     suspend fun depositAddress(token: String, chain: String): Result<JsonObject> {
         return try {
-            Result.success(api.depositCrypto(token, chain).obj())
+            Result.success(Api.json.parseToJsonElement(api.depositCrypto(token, chain)).obj())
         } catch (e: ApiException) {
             Result.failure(e)
         } catch (e: Exception) {
