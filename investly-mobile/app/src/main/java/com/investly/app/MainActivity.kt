@@ -1,47 +1,61 @@
 package com.investly.app
 
+import android.annotation.SuppressLint
+import android.app.Activity
+import android.os.Build
 import android.os.Bundle
-import androidx.activity.ComponentActivity
-import androidx.activity.compose.setContent
-import androidx.compose.runtime.LaunchedEffect
-import com.investly.app.ui.InvestlyApp
-import kotlinx.coroutines.flow.first
+import android.view.View
+import android.webkit.WebResourceRequest
+import android.webkit.WebView
+import android.webkit.WebViewClient
 
-class MainActivity : ComponentActivity() {
+class MainActivity : Activity() {
+
+    companion object {
+        const val SITE = "http://192.168.100.5:8000"
+    }
+
+    private lateinit var wv: WebView
+
+    @SuppressLint("SetJavaScriptEnabled")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val vm = AppViewModel(applicationContext)
 
-        setContent {
-            LaunchedEffect(Unit) {
-                vm.startNetworkWatch { vm.refreshAll(force = true) }
-                vm.startPolling {
-                    buildList {
-                        when (vm.currentTab) {
-                            "home" -> add("dashboard")
-                            "plans" -> add("plans")
-                            "deposit" -> add("deposit")
-                            "activity" -> add("transactions")
-                            "profile" -> add("profile")
-                        }
-                    }
-                }
-                vm.bootstrap()
-            }
-
-            // auto-refresh when internet comes back
-            LaunchedEffect(Unit) {
-                var prev = vm.online.value
-                vm.online.collect { now ->
-                    if (!prev && now) {
-                        vm.refreshAll(force = true)
-                        if (vm.loggedIn == false) vm.bootstrap()
-                    }
-                    prev = now
-                }
-            }
-
-            InvestlyApp(vm)
+        // enable service workers so PWA offline caching works inside the shell
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            android.webkit.ServiceWorkerController.getInstance().settings.javaScriptEnabled = true
         }
+
+        wv = WebView(this)
+        wv.settings.apply {
+            javaScriptEnabled = true
+            domStorageEnabled = true
+            databaseEnabled = true
+            useWideViewPort = true
+            loadWithOverviewMode = true
+            mediaPlaybackRequiresUserGesture = false
+        }
+        wv.setBackgroundColor(0xFFF4F5F7.toInt())
+        wv.overScrollMode = View.OVER_SCROLL_NEVER
+
+        wv.webViewClient = object : WebViewClient() {
+            override fun shouldOverrideUrlLoading(v: WebView, r: WebResourceRequest): Boolean =
+                !r.url.toString().startsWith(SITE)
+        }
+
+        setContentView(wv)
+        if (savedInstanceState != null) wv.restoreState(savedInstanceState)
+        else wv.loadUrl(SITE)
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        wv.saveState(outState)
+    }
+
+    @Deprecated("Deprecated in Java")
+    override fun onBackPressed() {
+        if (::wv.isInitialized && wv.canGoBack()) wv.goBack()
+        else @Suppress("DEPRECATION") super.onBackPressed()
     }
 }
