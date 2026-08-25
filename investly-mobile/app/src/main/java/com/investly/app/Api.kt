@@ -28,6 +28,7 @@ class Api(context: Context) {
 
     companion object {
         const val BASE = "http://192.168.100.5:8000"
+        const val CACHE_VER = "v3_"
         val json = Json { ignoreUnknownKeys = true; coerceInputValues = true; isLenient = true }
     }
 
@@ -87,6 +88,7 @@ class Api(context: Context) {
             .url(url)
             .header("Accept", "application/json")
             .header("X-Requested-With", "XMLHttpRequest")
+            .header("X-App-Key", "invx_dJnavbLFBjg2tmxri7kTCs1wNEuA")
             .header("Origin", BASE)
             .header("Referer", "$BASE/")
         if (method == "POST" || method == "PUT" || method == "DELETE") {
