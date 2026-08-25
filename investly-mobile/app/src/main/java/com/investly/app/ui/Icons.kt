@@ -17,16 +17,17 @@ private fun builder(name: String) = ImageVector.Builder(
     viewportHeight = 24f
 )
 
-private fun ImageVector.Builder.stroke(block: androidx.compose.ui.graphics.vector.PathBuilder.() -> Unit) {
+private fun ImageVector.Builder.stroke(block: androidx.compose.ui.graphics.vector.PathBuilder.() -> Unit): ImageVector.Builder {
     path(
         fill = null,
         stroke = SolidColor(Color.Black),
         strokeLineWidth = 2f,
         strokeLineCap = StrokeCap.Round,
-        strokeLineJoin = StrokeCap.Round,
+        strokeLineJoin = StrokeJoin.Round,
         pathFillType = PathFillType.NonZero,
         pathBuilder = block
     )
+    return this
 }
 
 val IcHome: ImageVector = builder("IcHome").stroke {
