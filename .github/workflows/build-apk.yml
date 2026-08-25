@@ -12,6 +12,9 @@ permissions:
 jobs:
   build:
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: investly-mobile
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -34,7 +37,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: Investly-debug-apk
-          path: app/build/outputs/apk/debug/app-debug.apk
+          path: investly-mobile/app/build/outputs/apk/debug/app-debug.apk
 
       - name: Publish release
         if: github.ref == 'refs/heads/main'
@@ -45,4 +48,4 @@ jobs:
           body: |
             Investly Android app (debug build).
             Server: http://192.168.100.5:8000 (same Wi-Fi as PC required)
-          files: app/build/outputs/apk/debug/app-debug.apk
+          files: investly-mobile/app/build/outputs/apk/debug/app-debug.apk
